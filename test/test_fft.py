@@ -43,9 +43,6 @@ def time_fft(func, data):
 
 result = pd.DataFrame(columns=['scipy', 'numpy', 'pyfftw', 'pyfftw-aligned'])
 
-def test_dump1():
-    with open('result_realfft.md', 'w') as f:
-        result.to_markdown(f)
 
 print(length)
 def test_scipy():
@@ -68,6 +65,9 @@ def test_pyfftw():
         sigin[:] = np.zeros(l)
         result.loc[l, 'pyfftw-aligned'] = time_fft(pyfftw.interfaces.numpy_fft.fft, sigin)
 
+def test_dump1():
+    with open('result_realfft.md', 'w') as f:
+        result.to_markdown(f)
 
 result = pd.DataFrame(columns=['scipy', 'numpy', 'pyfftw', 'pyfftw-aligned', 'gpyfft', 'gpyfft-nocopy'])
 def test_complex_scipy():
