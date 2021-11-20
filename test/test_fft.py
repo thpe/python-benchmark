@@ -7,6 +7,8 @@ import pyopencl as cl
 import pyopencl.array as cla
 from gpyfft.fft import FFT
 
+context = cl.create_some_context()
+queue = cl.CommandQueue(context)
 
 def mflops(N, time_ms):
     return 2.5 * N * np.log2(N) / time_ms
@@ -25,7 +27,7 @@ def clfft(data_host):
   result_host = data_gpu.get()
   return result_host
 
-def clfft_nocopy(data_host):
+def clfft_nocopy(data_gpu):
   transform = FFT(context, queue, data_gpu)
   event, = transform.enqueue()
   event.wait()
@@ -41,6 +43,9 @@ def time_fft(func, data):
 
 result = pd.DataFrame(columns=['scipy', 'numpy', 'pyfftw', 'pyfftw-aligned'])
 
+def test_dump1():
+    with open('result_realfft.md', 'w') as f:
+        result.to_markdown(f)
 
 print(length)
 def test_scipy():
@@ -76,13 +81,11 @@ def test_complex_numpy():
         result.loc[l, 'numpy'] = time_fft(np.fft.fft, sigin)
 
 def test_complex_gpyfft():
-    context = cl.create_some_context()
-    queue = cl.CommandQueue(context)
     for l in length:
         sigin = np.zeros(l, dtype = np.complex64)
         result.loc[l, 'gpyfft'] = time_fft(clfft, sigin)
         data_gpu = cla.to_device(queue, sigin)
-        result.loc[l, 'gpyfft-nocopy'] = time_fft(clfft_nocopy, sigin)
+        result.loc[l, 'gpyfft-nocopy'] = time_fft(clfft_nocopy, data_gpu)
 def test_complex_pyfftw():
     for l in length:
         sigin = np.zeros(l, dtype = np.complex64)
@@ -92,3 +95,6 @@ def test_complex_pyfftw():
         result.loc[l, 'pyfftw-aligned'] = time_fft(pyfftw.interfaces.numpy_fft.fft, sigin)
 
 
+def test_dump2():
+    with open('result_complexfft.md', 'w') as f:
+        result.to_markdown(f)

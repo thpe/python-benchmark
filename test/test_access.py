@@ -67,3 +67,5 @@ def test_pdtonp():
       result.loc[l, 'pdtonp'] = time_func(pdsetzeroiloc, df, 5)
 def test_dumpdf():
     result.to_csv('result.csv')
+    with open('result.md', 'w') as f:
+      result.to_markdown(f)
