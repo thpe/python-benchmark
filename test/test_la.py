@@ -39,7 +39,7 @@ def test_dump():
     with open('result_la_mul.md', 'w') as f:
         result.to_markdown(f)
 
-result = pd.DataFrame(columns=['np'])
+result = pd.DataFrame(columns=['np_id'])
 
 def test_inv():
     for l in tqdm(length):
