@@ -54,3 +54,9 @@ def test_dump1():
     result.to_csv('result_la_inv.csv')
     with open('result_la_inv.md', 'w') as f:
         result.to_markdown(f)
+
+if __name__=="__main__":
+    test_matmul()
+    test_dump()
+    test_inv()
+    test_dump1()
